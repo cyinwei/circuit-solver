@@ -1,3 +1,4 @@
+
 %Circuit class that stores all circuit elements and contains all function for solving algorithm
 classdef Circuit < handle
     properties
@@ -18,31 +19,31 @@ classdef Circuit < handle
         %Function that adds a voltage source to the circuit, adds new nodes as needed
         %the voltage (v), positive node (n1) and negative node (n2) are given
         function AddVSource(obj, v, n1, n2)
-            if n1 ~= n2 %Ensure that n1 is not equal to n2 (that would be an error)
-                obj.vsources(numel(obj.vsources)+1) = VSource(v, n1, n2); %Add the vsource to the circuit
-                if obj.AddNode(n1) %If n1 does not exist (ie- the AddNode function added a new node)
-                    obj.nodes(numel(obj.nodes)).connects(numel(obj.nodes(numel(obj.nodes)).connects)+1)=Identifier('v',numel(obj.vsources), true); %Add identifier to n1 to identify new vsource connected to n1
+            if n1 ~= n2 %Ensure that n1 is not equal to n2 (that would be an error, since you need 2 different nodes)
+                obj.vsources(end+1) = VSource(v, n1, n2); %Add the vsource to the circuit
+                if obj.AddNode(n1) %If n1 does not exist (ie- the AddNode function added a new node)                    
+                    obj.nodes(end).connects(end+1)=Identifier('v',numel(obj.vsources), true); %Add identifier to n1 to identify new vsource connected to n1
                 else %If n1 exists, find it
                     for i = 1:numel(obj.nodes)
                         if obj.nodes(i).id==n1
-                            obj.nodes(i).connects(numel(obj.nodes(i).connects)+1)=Identifier('v',numel(obj.vsources), true); %Add identifier to n1 to identify new vsource connected to n1
+                            obj.nodes(i).connects(end+1)=Identifier('v',numel(obj.vsources), true); %Add identifier to n1 to identify new vsource connected to n1
                             break;
                         end
                     end
                 end
                 
                 if obj.AddNode(n2) %If n2 does not exist (ie- the AddNode function added a new node)
-                    obj.nodes(numel(obj.nodes)).connects(numel(obj.nodes(numel(obj.nodes)).connects)+1)=Identifier('v',numel(obj.vsources), false);  %Add identifier to n2 to identify new vsource connected to n2
+                    obj.nodes(end).connects(end+1)=Identifier('v',numel(obj.vsources), false);  %Add identifier to n2 to identify new vsource connected to n2
                 else  %If n2 exists, find it
                     for i = 1:numel(obj.nodes)
                         if obj.nodes(i).id==n2
-                            obj.nodes(i).connects(numel(obj.nodes(i).connects)+1)=Identifier('v',numel(obj.vsources), false); %Add identifier to n2 to identify new vsource connected to n2
+                            obj.nodes(i).connects(end+1)=Identifier('v',numel(obj.vsources), false); %Add identifier to n2 to identify new vsource connected to n2
                             break;
                         end
                     end
                 end
             else %If n1=n2
-                disp('Nodes cannot be the same!');
+                disp('In function AddVSource: Nodes cannot be the same!');
             end
         end
         
@@ -50,9 +51,9 @@ classdef Circuit < handle
         %the current (c), positive node (n1) and negative node (n2) are given
         function AddCSource(obj, c, n1, n2)
             if n1 ~= n2 %Ensure that n1 is not equal to n2 (that would be an error)
-                obj.csources(numel(obj.csources)+1) = CSource(c, n1, n2); %Add the csource to the circuit
+                obj.csources(end+1) = CSource(c, n1, n2); %Add the csource to the circuit
                 if obj.AddNode(n1) %If n1 does not exist (ie- the AddNode function added a new node)
-                    obj.nodes(numel(obj.nodes)).connects(numel(obj.nodes(numel(obj.nodes)).connects)+1)=Identifier('c',numel(obj.csources), true); %Add identifier to n1 to identify new csource connected to n1
+                    obj.nodes(end).connects(end+1)=Identifier('c',numel(obj.csources), true); %Add identifier to n1 to identify new csource connected to n1
                 else %If n1 exists, find it
                     for i = 1:numel(obj.nodes)
                         if obj.nodes(i).id==n1
@@ -63,17 +64,17 @@ classdef Circuit < handle
                 end
                 
                 if obj.AddNode(n2) %If n2 does not exist (ie- the AddNode function added a new node)
-                    obj.nodes(numel(obj.nodes)).connects(numel(obj.nodes(numel(obj.nodes)).connects)+1)=Identifier('c',numel(obj.csources), false); %Add identifier to n2 to identify new csource connected to n2
+                    obj.nodes(end).connects(end+1)=Identifier('c',numel(obj.csources), false); %Add identifier to n2 to identify new csource connected to n2
                 else %If n2 exists, find it
                     for i = 1:numel(obj.nodes)
                         if obj.nodes(i).id==n2
-                            obj.nodes(i).connects(numel(obj.nodes(i).connects)+1)=Identifier('c',numel(obj.csources), false); %Add identifier to n2 to identify new csource connected to n2
+                            obj.nodes(i).connects(end+1)=Identifier('c',numel(obj.csources), false); %Add identifier to n2 to identify new csource connected to n2
                             break;
                         end
                     end
                 end
             else
-                disp('Nodes cannot be the same!');
+                disp('In function AddCSource: Nodes cannot be the same!');
             end
         end
         
@@ -81,24 +82,24 @@ classdef Circuit < handle
         %the current (r), declared positive node (n1) and declared negative node (n2) are given
         function AddResistor(obj, r, n1, n2)
             if n1 ~= n2 %Ensure that n1 is not equal to n2 (that would be an error)
-                obj.resistors(numel(obj.resistors)+1) = Resistor(r, n1, n2); %Add the resistor to the circuit
+                obj.resistors(end+1) = Resistor(r, n1, n2); %Add the resistor to the circuit
                 if obj.AddNode(n1) %If n1 does not exist (ie- the AddNode function added a new node)
-                    obj.nodes(numel(obj.nodes)).connects(numel(obj.nodes(numel(obj.nodes)).connects)+1)=Identifier('r',numel(obj.resistors), true); %Add identifier to n1 to identify new resistor connected to n1
+                    obj.nodes(end).connects(end+1)=Identifier('r',numel(obj.resistors), true); %Add identifier to n1 to identify new resistor connected to n1
                 else %If n1 exists, find it
                     for i = 1:numel(obj.nodes)
                         if obj.nodes(i).id==n1
-                            obj.nodes(i).connects(numel(obj.nodes(i).connects)+1)=Identifier('r',numel(obj.resistors), true); %Add identifier to n1 to identify new resistor connected to n1
+                            obj.nodes(i).connects(end+1)=Identifier('r',numel(obj.resistors), true); %Add identifier to n1 to identify new resistor connected to n1
                             break;
                         end
                     end
                 end
                 
                 if obj.AddNode(n2) %If n2 does not exist (ie- the AddNode function added a new node)
-                    obj.nodes(numel(obj.nodes)).connects(numel(obj.nodes(numel(obj.nodes)).connects)+1)=Identifier('r', numel(obj.resistors), false); %Add identifier to n2 to identify new resistor connected to n2
+                    obj.nodes(end).connects(end+1)=Identifier('r', numel(obj.resistors), false); %Add identifier to n2 to identify new resistor connected to n2
                 else %If n2 exists, find it
                     for i = 1:numel(obj.nodes)
                         if obj.nodes(i).id==n2
-                             obj.nodes(i).connects(numel(obj.nodes(i).connects)+1)=Identifier('r',numel(obj.resistors), false); %Add identifier to n2 to identify new resistor connected to n2
+                             obj.nodes(i).connects(end+1)=Identifier('r',numel(obj.resistors), false); %Add identifier to n2 to identify new resistor connected to n2
                             break;
                         end
                     end
@@ -110,10 +111,10 @@ classdef Circuit < handle
         
         %Adds a new node to the circuit; called by AddVSource, AddCSource and AddResistor
         %Creates a new node with given id if it does not exist
-        %Resturns true if the node was added (ie- did not already) exist, false otherwise
+        %Returns true if the node was added (ie- did not already) exist, false otherwise
         function added = AddNode(obj, id)
             if not(obj.CheckNode(id)) %Make sure the node does not already exist
-                obj.nodes(numel(obj.nodes)+1) = Node(id);
+                obj.nodes(end+1) = Node(id);
                 added = true;
             else
                 added=false;
@@ -257,7 +258,7 @@ classdef Circuit < handle
         end     
         
         %Traversal method for Collection algorithm; Collects the KCL data for all nodes
-        %It's messy, but works
+        %Recursively
         function Traverse(obj, curNode)
             for i = 1:numel(curNode.connects)
                 t = Collection(curNode); %Setup a Collection object to stick on node we are going to
@@ -307,3 +308,6 @@ classdef Circuit < handle
         end
     end
 end
+
+
+
