@@ -2,7 +2,7 @@
 classdef Node<handle
    properties
         id %Node id
-        connects=Identifier('n',-1,false); %Array of all identifiers used to identify each circuit element that the node is connected to
+        connects=Identifier('n',-1,false,-1); %Array of all identifiers used to identify each circuit element that the node is connected to
         collects=Collection(-1); %Used for traversal algorithm; stores data needed for KCL
         voltage %Calculated voltage on node
         current %This will be changed! (ignore this variable)

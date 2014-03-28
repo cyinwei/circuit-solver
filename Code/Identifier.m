@@ -7,13 +7,15 @@ classdef Identifier
         %for node analysis
         positive=false; %Identifies if the element is connected to the positive terminal of the node
         traversed=false; %For traversal algorithm: identifies if the identifier was already used for a traversal
+        adjNode;
     end
     methods
-        function obj = Identifier(t,ind,p) %Constructor; takes element type, index, and if it is connected to the nodes positive terminal
+        function obj = Identifier(t,ind,p,aNode) %Constructor; takes element type, index, and if it is connected to the nodes positive terminal
             obj.type=t;
             obj.index=ind;
             obj.positive=p;
             obj.traversed=false;
+            obj.adjNode=aNode;
         end
     end
 end
