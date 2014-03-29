@@ -1,3 +1,4 @@
+<<<<<<< HEAD:Code/Identifier.m
 %Class that serves as an abstraction to connect any circuit elements
 %(vsource, csource, or resistor) to a node
 classdef Identifier
@@ -21,3 +22,26 @@ classdef Identifier
         end
     end
 end
+=======
+%Class that serves as an abstraction to connect any circuit elements
+%(vsource, csource, or resistor) to a node
+classdef Identifier
+    properties
+        type=''; %Identifies the type of element that the identifier is associated with; v=vsource, c=csource, r=resistor
+        index=-1; %Stores the index of the vsource, csource, or resistor in its array in th associated Circuit class
+        %for node analysis
+        positive=false; %Identifies if the element is connected to the positive terminal of the node
+        traversed=false; %For traversal algorithm: identifies if the identifier was already used for a traversal
+        adjNode;
+    end
+    methods
+        function obj = Identifier(t,ind,p,aNode) %Constructor; takes element type, index, and if it is connected to the nodes positive terminal
+            obj.type=t;
+            obj.index=ind;
+            obj.positive=p;
+            obj.traversed=false;
+            obj.adjNode=aNode;
+        end
+    end
+end
+>>>>>>> 29230a4034405979bba4ca6d832f5b58be1b585a:Code/Identifier.m
