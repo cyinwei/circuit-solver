@@ -1,0 +1,10 @@
+c=Circuit();
+c.AddVSource(12,1,6);
+c.AddResistor(10,2,1);
+c.AddResistor(0,3,2);
+c.AddResistor(10,5,2);
+c.AddResistor(0,4,5);
+c.AddResistor(10,6,5);
+c.AddVSource(10,3,7);
+c.SetGround(6);
+c.MakeEquations();
