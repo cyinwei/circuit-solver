@@ -5,11 +5,13 @@ classdef VisualGrid < handle
    properties
        %backend stuff
        dimensionSize;
-       windowSize; %matrix of the window size
-       graphSize; %the square grid WITHIN the windows.
        squareSize; %the size of each individual square inside the grid
        blueprint; %input matrix
-       
+
+       %passed into
+       circuit;
+       grid;
+
        %frontend stuff
        mainWindow;
        component;
@@ -20,13 +22,14 @@ classdef VisualGrid < handle
    end
    
    methods
-       function obj = VisualGrid(blueprintMatrix)
-           obj.blueprint = blueprintMatrix;
+       function obj = VisualGrid(c, g)
+           circuit = c;
+           grid = g;
+
            obj.windowSize = getWindowSize(obj); %helper function that does a percentage of our overall size
-           obj.graphSize = getGraphSize(obj);
-           %assumes blue print is 2 dimensional square matrix
+           blueprint = grid.gridM %assumes blue print is 2 dimensional square matrix
            obj.dimensionSize = numel(blueprintMatrix(1));
-           obj.squareSize = (obj.windowSize - 40)/obj.dimensionSize;
+           obj.squareSize = 50; %fixed
            
            obj.draw();
        end
@@ -42,17 +45,20 @@ classdef VisualGrid < handle
                                             
            %draws a SQUARE grid within our window
            image = imread('images/horizontal-resistor.png');
-           %scale the image
-           %f = figure;
-           %imagesc(image);
-           %set(gca, 'units', 'normalized', 'position', [0 0 1 1]);
-           %set(gcf, 'units', 'pixels', 'position', [100 100 
-           for i=1:3
-               %initialize the button
-               component(i) = uicontrol('Position',[10,10+100*i,100,100], 'CData', image, 'Background','white');
+           
+           for i=1:dimensionSize
+           		for j=1:dimensionSize %input grid SHOULD be square....
+               	%initialize the button
+            		if blueprint(i, j) == []
+            			%put in an empty tile
+            			component(i, j) = uicontrol('Position',[10,10+100*i,100,100], 'Background','white');
+            		elseif
+
+
+               	
                
                %string callback...
-               set(component(i), 'Callback', 'showData()');
+               set(component(i, j), 'Callback', 'showData()');
                
            end
        end
@@ -77,17 +83,6 @@ classdef VisualGrid < handle
 %            disp(screenSize(4)/1.5);
 %            disp(screenSize(3)/1.5);
 
-       end
-       
-       function gSize = getGraphSize(obj)
-           %note: this function relies in windowsize to be calculated
-           %first!
-           
-           if obj.windowSize(3) > obj.windowSize(4)
-               gSize = obj.windowSize(4)-20;
-           else
-               gSize = obj.windowSize(3)-20;
-           end
        end
        
        %display data here
