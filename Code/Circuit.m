@@ -157,7 +157,7 @@ classdef Circuit < handle
                comp = obj.vsources(str2double(n));
            elseif tempT=='C'
                comp = obj.csources(str2double(n));
-           else
+           else tempT=='R'
                comp = obj.resistors(str2double(n));
            end
             
@@ -205,18 +205,73 @@ classdef Circuit < handle
             end
         end
         
-        function A2= MakeSuper(obj,curNode,otherNode)
+        function [As,Bs]= MakeSuper(obj,curNode,otherNode,diffV,nodeEnum,first,nGC)
+            disp('Super Call');
+            disp(curNode.id);
+            SA = zeros(1,nGC);
+            SA(nodeEnum(curNode.id)) = 1;
+            SA(nodeEnum(otherNode.id)) = -1;
+            SB = -diffV;
+            tempA=zeros(1,nGC);
+            tempB=0;
             for i=1:numel(curNode.collects)
                 if curNode.collects(i).prev_node.id ~= otherNode.id
-                    
+                    tempC = curNode.collects(i);
+                    resCorr=false; %Determine if we need to take into account that we have no resistance in the Collection
+                    if tempC.resistance == 0 %Special cases where we have no resistance
+                        if tempC.current == 0 && tempC.voltage ~= 0 && ~(numel(tempC.prev_node.connects)<2) %Special case: only have voltage on Collection, just stick a 1 into [A] and voltage value on [B]
+                            if tempC.prev_node.ground
+                               tempA = zeros(1,nGC);
+                               tempA(nodeEnum(curNode.id)) = 1; 
+                               tempB = -tempC.voltage;
+                               break;
+                            else %supernode
+                                %tempA = zeros(1,nonGroundCount);
+                                %tempA(nodeEnum(obj.nodes(i).id)) = 1;
+                                %tempA(nodeEnum(tempC.prev_node.id)) = -1;
+                                %tempB = -tempC.voltage;
+                                [tA,tB]=obj.MakeSuper(curNode.collects(i).prev_node,curNode,-tempC.voltage,nodeEnum,false,nGC);
+                                tempA=tA;
+                                tempB=tB;
+                               
+                                break;
+                            end
+
+                        else %Special case: set resistance to 1 so we don't divide by 0
+                            tempC.resistance = 1;
+                            resCorr=true;
+                        end
+                    end
+                    tempB = tempB - (tempC.voltage/tempC.resistance);  %Set the entry in [B] for current row
+                    tempB = tempB + tempC.current;
+                    if ~resCorr %Take into account previous node if we have current and/or resistance on Collection
+                        tempA(nodeEnum(curNode.id)) = tempA(nodeEnum(curNode.id)) - 1/tempC.resistance;
+                    end
+                    if ~tempC.prev_node.ground && ~resCorr && ~(numel(tempC.prev_node.connects)<2) %Don't use previous node if it is grounded or open node
+                        tempA(nodeEnum(tempC.prev_node.id)) = tempA(nodeEnum(tempC.prev_node.id)) + 1/tempC.resistance;
+                    end
+
                 end
             end
+            oA=[];
+            oB=[];
+            if first
+                [oA,oB]=obj.MakeSuper(otherNode,curNode,-diffV,nodeEnum,false,nGC);
+                 disp('after rec');
+                 disp(oA);
+                 disp(oB);
+            end
+            if (numel(oA)~=0)
+                disp(numel(tempA(1,:)));
+                disp(numel(oA(1,:)));
+                tempA(1,:)=tempA(1,:)+oA(1,:);
+                oA(1,:)=zeros(1,numel(oA(1,:)));
+            end
+            As=[tempA;SA;oA];
+            Bs=[tempB;SB;oB];
+            disp(As);
+            disp('end');
             
-            for i=1:numel(otherNode.collects)
-                if curNode.collects(i).prev_node.id ~= otherNode.id
-                    
-                end
-            end
         end
         
         %Function that takes collected KCL data and solves for node voltages
@@ -240,27 +295,29 @@ classdef Circuit < handle
             for i=1:numel(obj.nodes); %Make the matrices
                 tempA = zeros(1,nonGroundCount); %Current working row in matrix A
                 tempB = 0; %Current working entry in matrix B
-                special=false;
+
                 if ~(numel(obj.nodes(i).collects)<2)
                     for j=1:numel(obj.nodes(i).collects) %Go through each Collection on the node
                         tempC = obj.nodes(i).collects(j);
                         resCorr=false; %Determine if we need to take into account that we have no resistance in the Collection
                         if tempC.resistance == 0 %Special cases where we have no resistance
-                            if tempC.current == 0 && tempC.voltage ~= 0 %&& ~(numel(tempC.prev_node.connects)<2) %Special case: only have voltage on Collection, just stick a 1 into [A] and voltage value on [B]
+                            disp(tempC.current);
+                            disp(tempC.voltage);
+                            if (tempC.current==0) && (tempC.voltage~=0) && ~(numel(tempC.prev_node.connects)<2) %Special case: only have voltage on Collection, just stick a 1 into [A] and voltage value on [B]
                                 if tempC.prev_node.ground
                                    tempA = zeros(1,nonGroundCount);
                                    tempA(nodeEnum(obj.nodes(i).id)) = 1; 
                                    tempB = -tempC.voltage;
                                    break;
                                 else %supernode
-                                    tempA = zeros(1,nonGroundCount);
-                                    tempA(nodeEnum(obj.nodes(i).id)) = 1;
-                                    tempA(nodeEnum(tempC.prev_node.id)) = -1;
-                                    tempB = -tempC.voltage;
-                                    tempA2=obj.MakeSuper(obj.nodes(i),tempC.prev_node);
+                                    %tempA = zeros(1,nonGroundCount);
+                                    %tempA(nodeEnum(obj.nodes(i).id)) = 1;
+                                    %tempA(nodeEnum(tempC.prev_node.id)) = -1;
+                                    %tempB = -tempC.voltage;
+                                    [tempA,tempB]=obj.MakeSuper(obj.nodes(i),tempC.prev_node,tempC.voltage,nodeEnum,true,nonGroundCount);
+                                    break;
                                 end
                                
-                                special=true;
                             else %Special case: set resistance to 1 so we don't divide by 0
                                 tempC.resistance = 1;
                                 resCorr=true;
@@ -327,7 +384,7 @@ classdef Circuit < handle
         %Recursively
         function Traverse(obj, curNode)
             if (obj.firstNode == -1 && ~curNode.ground)
-                obj.firstNode = curNode.id
+                obj.firstNode = curNode.id;
             end
             for i = 1:numel(curNode.connects)
                 t = Collection(curNode); %Setup a Collection object to stick on node we are going to
@@ -426,11 +483,40 @@ classdef Circuit < handle
                 
                     loopInd = loopInd+1;
                 end
-                obj.grid=Grid(obj.drawLoops,obj.drawCompLoops,obj.drawOrients);
+                if ~obj.CheckCircuit()
+                    disp('Invalid Circuit!');
+                else
+                    obj.grid=Grid(obj.drawLoops,obj.drawCompLoops,obj.drawOrients);
+                end
                
             else %If grounded node not found, bail out
                 disp('Ground is not set!');
             end
+        end
+        
+        function good = CheckCircuit(obj)
+            good=true;
+            volts=0;
+            for j=1:numel(obj.drawCompLoops{1})
+                if obj.drawCompLoops{1}{j}(1)=='R' || obj.drawCompLoops{1}{j}(1)=='C'
+                    volts=volts + (obj.GetNode(obj.drawLoops{1}(j)).voltage - obj.GetNode(obj.drawLoops{1}(j+1)).voltage);
+                    %disp(strcat('+',num2str(obj.GetNode(obj.drawLoops{i}(j)).voltage - obj.GetNode(obj.drawLoops{i}(j+1)).voltage)));
+                elseif obj.drawCompLoops{1}{j}(1)=='V'
+                    if obj.drawOrients{1}(j)==1
+                        volts=volts-obj.GetComp(obj.drawCompLoops{1}{j}).voltage;
+                        %disp(strcat('-',num2str(obj.GetComp(obj.drawCompLoops{i}{j}).voltage)));
+                    else
+                        volts=volts+obj.GetComp(obj.drawCompLoops{1}{j}).voltage;
+                       % disp(strcat('+',num2str(obj.GetComp(obj.drawCompLoops{i}{j}).voltage)));
+                    end
+                end
+            end
+            if volts~=0
+                good=false;
+            end
+            
+            
+            
         end
         
         function loopComp = BiggestLoop(obj)
