@@ -42,16 +42,13 @@ function showData(grid, circuit, row, column)
             power = currentComponent.power;
         
     %time to print the data
-    text(10,10, typeName);
-    text(10,40, voltage);
-    text(10,70, current);
-    if type == 'r'
-        text(10, 100, resistance);
-        text(10, 130, power);
-    else
-        text(10, 100, power);
+    disp(typeName);
+    disp(voltage);
+    disp(current);
+    if(type == 'r')
+        disp(resistance);
     end
-   
-    
+    disp(voltage
+  
 end
 

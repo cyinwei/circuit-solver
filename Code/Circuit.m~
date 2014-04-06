@@ -675,16 +675,16 @@ classdef Circuit < handle
                 if traversed(1)=='R'
                     if (curNode.voltage > obj.GetNode(visited(end)).voltage)
                         dirs(end+1) = 0;
-                        %disp('if1');
-                        %disp(curNode.voltage);
-                        %disp('bk1');
-                        %disp(obj.GetNode(visited(end)).voltage);
+                        disp('if1');
+                        disp(curNode.voltage);
+                        disp('bk1');
+                        disp(obj.GetNode(visited(end)).voltage);
                     else
                         dirs(end+1) = 1;
-                        %disp('if2');
-                        %disp(curNode.voltage);
-                        %disp('bk1');
-                        %disp(obj.GetNode(visited(end)).voltage);
+                        disp('if2');
+                        disp(curNode.voltage);
+                        disp('bk1');
+                        disp(obj.GetNode(visited(end)).voltage);
                     end
                 elseif tempComp.node1 == curNode.id
                        dirs(end+1) = 1; %positive pointing in forward traverse
@@ -710,9 +710,9 @@ classdef Circuit < handle
                     end
                 end
             else
-                %disp('finish');
-                %disp(visited);
-                %disp(compV);
+                disp('finish');
+                disp(visited);
+                disp(compV);
                 obj.loops{end+1}=visited;
                 obj.compLoops{end+1}=compV;
                 obj.orients{end+1}=dirs;
@@ -720,8 +720,8 @@ classdef Circuit < handle
         end
         
         function DrawTraverse2(obj, curNode, traversed, visited, compV, dirs, masterLoop)
-            %disp('traverse');
-            %disp(curNode.id);
+            disp('traverse');
+            disp(curNode.id);
             if ~strcmp(traversed,'none')
                compV{end+1} = traversed;
                tempComp = obj.GetComp(traversed);
@@ -729,16 +729,16 @@ classdef Circuit < handle
                if traversed(1)=='R'
                     if (curNode.voltage > obj.GetNode(visited(end)).voltage)
                         dirs(end+1) = 0;
-                        %disp('if1');
-                        %disp(curNode.voltage);
-                        %disp('bk1');
-                        %disp(obj.GetNode(visited(end)).voltage);
+                        disp('if1');
+                        disp(curNode.voltage);
+                        disp('bk1');
+                        disp(obj.GetNode(visited(end)).voltage);
                     else
                         dirs(end+1) = 1;
-                        %disp('if2');
-                        %disp(curNode.voltage);
-                        %disp('bk1');
-                        %disp(obj.GetNode(visited(end)).voltage);
+                        disp('if2');
+                        disp(curNode.voltage);
+                        disp('bk1');
+                        disp(obj.GetNode(visited(end)).voltage);
                     end
                 elseif tempComp.node1 == curNode.id
                        dirs(end+1) = 1; %positive pointing in forward traverse
@@ -747,7 +747,7 @@ classdef Circuit < handle
                 end
             end
             visited(end+1) = curNode.id;
-            %disp(visited);
+            disp(visited);
             
             if ~(ismember(curNode.id,masterLoop)) || numel(visited)==1
                 for i=1:numel(curNode.connects)
@@ -764,8 +764,8 @@ classdef Circuit < handle
                     end
                 end
             else
-                %%disp('finish');
-                %disp(visited);
+                disp('finish');
+                disp(visited);
                 obj.loops{end+1}=visited;
                 obj.compLoops{end+1}=compV;
                 obj.orients{end+1}=dirs;

@@ -9,6 +9,7 @@ classdef Identifier
         traversed=false; %For traversal algorithm: identifies if the identifier was already used for a traversal
         adjNode;
         cId;
+        vCurrent=inf;
     end
     methods
         function obj = Identifier(t,ind,p,aNode, i) %Constructor; takes element type, index, and if it is connected to the nodes positive terminal

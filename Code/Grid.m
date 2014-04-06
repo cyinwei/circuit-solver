@@ -6,7 +6,8 @@ classdef Grid<handle
         compLoops
         loopOrients %list of orientations for each loop
         curDir='up' %which way are we currently going?
-        gridDim=0;
+        gridDimX=0;
+        gridDimY=0;
     end
     methods
         function obj=Grid(nLoops, cLoops, loopDirs)
@@ -45,12 +46,12 @@ classdef Grid<handle
                    prevDir=cDir;
                    prevX=cX;
                    prevY=cY;
-                   disp('from')
-                   disp(startX);
-                   disp(startY);
-                   disp('to');
-                   disp(endX);
-                   disp(endY);
+                   %disp('from')
+                   %disp(startX);
+                   %disp(startY);
+                   %disp('to');
+                   %disp(endX);
+                   %disp(endY);
                    %Determine node terminal to use
                    if endX>cX %Target is to right
                        if ~startNode.right_filled
@@ -311,33 +312,40 @@ classdef Grid<handle
         function MakeGrid(obj)
             shiftX=1;
             shiftY=1;
-            for i=1:numel(obj.elems)
-               if obj.elems{i}.x+1<shiftX
-                   shiftX=abs(obj.elems{i}.x)+1;
-               end
-               if obj.elems{i}.y+1<shiftY
-                   shiftY=abs(obj.elems{i}.y)+1;
-               end
-            end
+            %for i=1:numel(obj.elems)
+              % if obj.elems{i}.x+1<shiftX
+                  % shiftX=abs(obj.elems{i}.x)+1;
+              % end
+               %if obj.elems{i}.y+1<shiftY
+                 %  shiftY=abs(obj.elems{i}.y)+1;
+               %end
+            %end
             
-            obj.gridM= DrawElem.empty;
-            for i=1:numel(obj.elems)
-               tempEl=obj.elems{i};
-               cX=tempEl.x+shiftX+1;
-               cY=tempEl.y+shiftY+1;
-               disp('put in:');
-               disp(tempEl);
-               obj.gridM{cX,cY}=tempEl;
+                obj.gridM= DrawElem.empty;
+                for i=1:numel(obj.elems)
+                   tempEl=obj.elems{i};
+                   cX=tempEl.x+shiftX+1;
+                   cY=tempEl.y+shiftY+1;
+                   %disp('cX');
+                   %disp(cX);
+                   %disp('cY');
+                   %disp(cY);
+                   %disp('put in:');
+                   %disp(tempEl);
+                   obj.gridM{cY,cX}=tempEl;
+                end
+                %ends=sqrt(numel(obj.gridM));
+                %for j=1:sqrt(numel(obj.gridM))
+                 %   disp(j);
+                 %   obj.gridM{j,ends}=[];
+               % end
+                %for j=1:ends
+                 %   obj.gridM{ends+1,j}=[];
+                %end
+                obj.gridDimX=numel(obj.gridM(1,:));
+                obj.gridDimY=numel(obj.gridM(:,1));
             end
-            ends=sqrt(numel(obj.gridM));
-            for i=1:sqrt(numel(obj.gridM))
-                disp(i);
-                obj.gridM{i,ends}=[];
-            end
-            for i=1:ends
-                obj.gridM{ends+1,i}=[];
-            end
-        end
+       % end
         
         function CreateMasterElems(obj) %Draw for master loop
             obj.elems{end+1}=DrawElem(obj.nodeLoops{1}(1),0,0,'none');
@@ -446,7 +454,7 @@ classdef Grid<handle
                 obj.ChangeDirection();
                 [curX,curY]=obj.MoveXY(curX,curY);
             end
-            obj.gridDim=(numel(obj.elems))/4;
+            %obj.gridDim=(numel(obj.elems))/4;
         end
         
         function theElem= GetElem(obj, id)
@@ -500,12 +508,5 @@ classdef Grid<handle
            end
         end
         
-        function ShowGrid(obj)
-           for i=1:obj.gridDim+1
-               for j=1:obj.gridDim+1
-                   
-               end
-           end
-        end
     end
 end

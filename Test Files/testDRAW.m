@@ -9,3 +9,6 @@ c.AddResistor(100,4,3,'R5');
 c.SetGround(5);
 c.MakeEquations();
 c.StartDrawTraverse();
+c.grid=Grid(c.drawLoops,c.drawCompLoops,c.drawOrients);
+
+d = VisualGrid(c, c.grid);

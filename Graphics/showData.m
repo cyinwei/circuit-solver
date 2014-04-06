@@ -1,13 +1,6 @@
 %Needs a completed circuit input, completed grid input
 
 function showData(grid, circuit, row, column)
-
-
-    dataWindow = figure('Position', [0  100], ...
-                                                    'Name', 'Status', 'NumberTitle', 'Off');
-                  %display the data here...
-                  %TODO
-                  
     currentDrawElems = grid.gridM(row, column);
     currentComponent = circuit.GetComp(currentDrawElems.elem_id);
     
@@ -41,7 +34,14 @@ function showData(grid, circuit, row, column)
             resistance = currentComponent.resistance;
             power = currentComponent.power;
         
-    %
-    
+    %time to print the data
+    disp (typeName);
+    disp(voltage);
+    disp(current);
+    if(type == 'r')
+        disp(resistance);
+    end
+    disp(power);
+  
 end
 
