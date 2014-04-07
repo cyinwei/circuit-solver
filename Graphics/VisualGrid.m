@@ -8,6 +8,7 @@ classdef VisualGrid < handle
        squareSize; %the size of each individual square inside the grid
        blueprint; %input matrix
        windowSize;
+       scaleFactor;
 
        %passed into
        circuit;
@@ -40,7 +41,8 @@ classdef VisualGrid < handle
            obj.windowSize = 700;%getWindowSize(obj); %helper function that does a percentage of our overall size
            obj.blueprint = obj.grid.gridM; %assumes blue print is 2 dimensional square matrix
            obj.dimensionSize = 8;
-           obj.squareSize = 51; %fixed
+           obj.squareSize = 41; %fixed
+           obj.scaleFactor = (41/51);
            
            obj.draw();
        end
@@ -193,7 +195,11 @@ classdef VisualGrid < handle
        
        function drawComponent(obj, currentElem, image_file, i, j, size, callback) %j = row, i = columns
            image = imread(image_file);
-           obj.component(i, j) = uicontrol('Position',[10+size*i obj.windowSize-10-size*j size size], 'cdata', image);
+           image2 = image;
+           if obj.scaleFactor ~= 1
+               image2 = imresize(image, obj.scaleFactor);
+           end
+           obj.component(i, j) = uicontrol('Position',[10+size*i obj.windowSize-10-size*j size size], 'cdata', image2);
            
            %callback
            if callback
@@ -238,10 +244,7 @@ classdef VisualGrid < handle
                else 
                    set(obj.textResistance, 'Visible', 'Off');
                end
-               
-               
-               
-               
+              
                %display data
                disp(['------- ' name ' -------']);
                disp([name ' voltage: ' voltage]);
