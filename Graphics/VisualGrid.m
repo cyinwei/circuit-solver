@@ -62,7 +62,7 @@ classdef VisualGrid < handle
            %---------------------------------------------------------------
            
            %our main window
-           obj.mainWindow = figure('Position', [100 300 700 700], ...
+           obj.mainWindow = figure('Position', [100 100 700 700], ...
                                                 'Name', obj.name, 'NumberTitle', 'Off');
            
            %loops through a 2 dimensional vector, and draws all the
