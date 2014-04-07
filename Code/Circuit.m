@@ -220,6 +220,8 @@ classdef Circuit < handle
                     obj.SolveCircuit(); %With accumulated data for KCLs from traversal algorithm, solve the node voltages
                     obj.ValueResistors(); %With node voltages, find the voltage and current on each resistor
                     obj.ValueOpenNodes();
+                    obj.ValueCSources();
+                    obj.VCurrents();
                 else
                     disp('Error: Circuit is not closed!');
                 end
@@ -391,7 +393,7 @@ classdef Circuit < handle
         %Function that takes solved node voltages and solves for voltage and power on each csource
         function ValueCSources(obj)
             for i=1:numel(obj.csources)
-                obj.csources(i).voltage = abs(obj.GetNode(obj.csources(i),node1).voltage - obj.GetNode(obj.csources(i).node2).voltage);
+                obj.csources(i).voltage = abs(obj.GetNode(obj.csources(i).node1).voltage - obj.GetNode(obj.csources(i).node2).voltage);
                 obj.csources(i).power = obj.csources(i).voltage * obj.csources(i).current;
             end
         end    
@@ -534,9 +536,9 @@ classdef Circuit < handle
                      end
                  elseif tempC.type=='c'
                      if tempC.positive
-                         currents(end+1)=tempC.current;
+                         currents(end+1)=tempC.vCurrent;
                      else
-                         currents(end+1)=-tempC.current;
+                         currents(end+1)=-tempC.vCurrent;
                      end
                  elseif tempC.type=='v'
                     numV=numV+1;
