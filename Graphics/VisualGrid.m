@@ -4,8 +4,12 @@
 classdef VisualGrid < handle 
    properties
        %backend stuff
+<<<<<<< HEAD
        dimensionSizeX;
        dimensionSizeY;
+=======
+       dimensionSize;
+>>>>>>> 3da1db6a338cf615ebb0ffbac6d91b23be6d27e7
        squareSize; %the size of each individual square inside the grid
        blueprint; %input matrix
        windowSize;
@@ -41,8 +45,12 @@ classdef VisualGrid < handle
 
            obj.windowSize = 700;%getWindowSize(obj); %helper function that does a percentage of our overall size
            obj.blueprint = obj.grid.gridM; %assumes blue print is 2 dimensional square matrix
+<<<<<<< HEAD
            obj.dimensionSizeX = obj.grid.gridDimX;
            obj.dimensionSizeY = obj.grid.gridDimY;
+=======
+           obj.dimensionSize = 8;
+>>>>>>> 3da1db6a338cf615ebb0ffbac6d91b23be6d27e7
            obj.squareSize = 41; %fixed
            obj.scaleFactor = (41/51);
            
@@ -64,6 +72,7 @@ classdef VisualGrid < handle
            %---------------------------------------------------------------
            
            %our main window
+<<<<<<< HEAD
            obj.mainWindow = figure('Position', [100 20 700 700], ...
                                                 'Name', obj.name, 'NumberTitle', 'Off', 'Color', [1 1 1]);
            
@@ -72,12 +81,26 @@ classdef VisualGrid < handle
            for j=1:obj.dimensionSizeY
            		for i=1:obj.dimensionSizeX
                     currentElem=obj.grid.gridM{obj.dimensionSizeY-j+1,i};
+=======
+           obj.mainWindow = figure('Position', [100 100 700 700], ...
+                                                'Name', obj.name, 'NumberTitle', 'Off');
+           
+           %loops through a 2 dimensional vector, and draws all the
+           %components
+           for j=1:obj.dimensionSize
+           		for i=1:obj.dimensionSize
+                    currentElem=obj.grid.gridM{obj.dimensionSize-j+1,i};
+>>>>>>> 3da1db6a338cf615ebb0ffbac6d91b23be6d27e7
             		if isempty(currentElem)
             			%put in an empty tile, nothing to do
         
                     elseif ~(isempty(currentElem))    
                         id = currentElem.elem_id;
+<<<<<<< HEAD
                         %disp(id);
+=======
+                        disp(id);
+>>>>>>> 3da1db6a338cf615ebb0ffbac6d91b23be6d27e7
                         
                         if currentElem.type == 'v'
                             if strcmp(currentElem.direction,  'up') > 0                               
@@ -116,10 +139,17 @@ classdef VisualGrid < handle
                                 obj.drawComponent(currentElem, 'images/current-source-vertical-negative.png', i, j, obj.squareSize, true);
                              
                             elseif strcmp(currentElem.direction,  'left') > 0
+<<<<<<< HEAD
                                 obj.drawComponent(currentElem, 'images/current-source-horizontal-negative.png', i, j, obj.squareSize, true);                                                             
                                
                             else %right
                                 obj.drawComponent(currentElem, 'images/current-source-horizontal-positive.png', i, j, obj.squareSize, true);
+=======
+                                obj.drawComponent(currentElem, 'images/current-source-vertical-negative.png', i, j, obj.squareSize, true);                                                             
+                               
+                            else %right
+                                obj.drawComponent(currentElem, 'images/current-source-vertical-negative.png', i, j, obj.squareSize, true);
+>>>>>>> 3da1db6a338cf615ebb0ffbac6d91b23be6d27e7
                               
                             end
                             
@@ -178,8 +208,13 @@ classdef VisualGrid < handle
                         %draws the names of the components
                         if currentElem.type~='s'
                             MyBox=uicontrol('Style','text');
+<<<<<<< HEAD
                             set(MyBox,'String',currentElem.elem_id, 'FontSize', 6);
                             set(MyBox,'Position',[10+obj.squareSize*i,(700-10-obj.squareSize*j),20,10]);
+=======
+                            set(MyBox,'String',currentElem.elem_id);
+                            set(MyBox,'Position',[10+obj.squareSize*i,(700-10-obj.squareSize*j),15,15]);
+>>>>>>> 3da1db6a338cf615ebb0ffbac6d91b23be6d27e7
                         end
                     end
                 end
@@ -205,7 +240,11 @@ classdef VisualGrid < handle
            
            %callback
            if callback
+<<<<<<< HEAD
                currentElem=obj.grid.gridM{obj.dimensionSizeY-j+1,i};
+=======
+               currentElem=obj.grid.gridM{obj.dimensionSize-j+1,i};
+>>>>>>> 3da1db6a338cf615ebb0ffbac6d91b23be6d27e7
                set(obj.component(i, j), 'Callback', {@obj.drawComponentCallback, currentElem});
            end
            
