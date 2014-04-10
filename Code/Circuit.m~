@@ -652,10 +652,9 @@ classdef Circuit < handle
                 obj.drawOrients{end+1}=obj.orients{ind};
                 loopComp=numel(obj.compLoops{ind});
                 tempCon=[];
-                for k=1:numel(obj.loops{ind})
-                    tempCon(end+1) = numel(obj.GetNode(obj.loops{ind}(k)).connects);
+                for k=1:numel(loops{ind})
+                    
                 end
-                obj.nodeCon{end+1}=tempCon;
                 obj.loops=[];
                 obj.orients=[];
 

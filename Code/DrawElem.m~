@@ -6,7 +6,6 @@ classdef DrawElem
         elem_id
         direction
         nodeExt=false;
-        nextNode;
         %For node elems:
         up_filled=false;
         right_filled=false;
@@ -36,6 +35,7 @@ classdef DrawElem
             obj.x=x1;
             obj.y=y1;
             obj.direction=d;
+
         end
     end
 end
